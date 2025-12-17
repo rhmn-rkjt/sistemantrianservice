@@ -1,0 +1,47 @@
+.customer-layout {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 24px;
+  padding: 32px;
+}
+
+.queue-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+}
+
+.queue-number {
+  font-size: 96px;
+  font-weight: bold;
+  color: #003b6f;
+  margin: 24px 0;
+}
+
+.my-ticket {
+  margin-top: 16px;
+  font-size: 18px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat-card {
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.waiting { background: #dff0ff; }
+.calling { background: #cdefff; }
+.missed  { background: #ffd6d6; color: #c62828; }
+.done    { background: #d6ffe0; color: #2e7d32; }

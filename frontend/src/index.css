@@ -1,0 +1,11 @@
+/* GLOBAL */
+@import "./styles/dashboard.css";
+
+/* PER HALAMAN */
+@import "./customer/customer.css";
+@import "./admin/admin.css";
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}

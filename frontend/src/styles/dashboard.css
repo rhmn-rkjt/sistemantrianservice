@@ -1,0 +1,16 @@
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #9adfff;
+  padding: 30px;
+}
+
+.dashboard {
+  flex: 1;
+  padding: 40px;
+  background: #eef8ff;
+}
