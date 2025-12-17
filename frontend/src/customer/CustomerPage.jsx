@@ -29,9 +29,7 @@ export default function CustomerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ===============================
-  // AMBIL NOMOR ANTRIAN (SELALU BOLEH)
-  // ===============================
+  // AMBIL NOMOR ANTRIAN 
   const handleTakeTicket = async () => {
     try {
       setLoading(true);
@@ -53,7 +51,7 @@ export default function CustomerPage() {
         throw new Error("ticketId tidak ditemukan");
       }
 
-      // ⬇️ SELALU SIMPAN ticket TERAKHIR
+      // SELALU SIMPAN ticket TERAKHIR
       localStorage.setItem("ticketId", data.ticketId);
       setTicketId(data.ticketId);
     } catch (err) {
@@ -64,9 +62,7 @@ export default function CustomerPage() {
     }
   };
 
-  // ===============================
   // REALTIME TIKET TERAKHIR CUSTOMER
-  // ===============================
   useEffect(() => {
     if (!ticketId) {
       setMyTicket(null);
@@ -92,9 +88,7 @@ export default function CustomerPage() {
     return () => unsub();
   }, [ticketId]);
 
-  // ===============================
   // REALTIME STATISTIK GLOBAL
-  // ===============================
   useEffect(() => {
     const unsubWaiting = onSnapshot(
       query(collection(db, "tickets"), where("status", "==", "waiting")),
@@ -131,9 +125,6 @@ export default function CustomerPage() {
     };
   }, []);
 
-  // ===============================
-  // UI
-  // ===============================
   return (
     <div className="customer-layout">
       {/* KIRI — NOMOR CUSTOMER */}
@@ -146,7 +137,6 @@ export default function CustomerPage() {
 
         <hr />
 
-        {/* 🔥 TOMBOL SELALU ADA */}
         <button
           className="btn primary"
           onClick={handleTakeTicket}
@@ -174,10 +164,7 @@ export default function CustomerPage() {
     </div>
   );
 }
-
-// ===============================
-// COMPONENT STAT
-// ===============================
+// ================= COMPONENT STAT =================
 function StatBox({ title, value }) {
   return (
     <div className={`stat-card ${title.toLowerCase()}`}>

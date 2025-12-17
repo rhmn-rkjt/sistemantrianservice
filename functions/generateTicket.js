@@ -22,7 +22,7 @@ exports.generateTicket = onRequest(
 
         let lastNumber = 0;
 
-        // 🔥 AUTO INIT COUNTER (JIKA BELUM ADA)
+        // Init Counter
         if (!snap.exists) {
           tx.set(counterRef, {
             currentNumber: 0,
@@ -33,7 +33,7 @@ exports.generateTicket = onRequest(
           lastNumber = snap.data().lastNumber || 0;
         }
 
-        // 🔢 Generate nomor baru
+        // Generate nomor baru
         lastNumber += 1;
 
         tx.update(counterRef, {
@@ -41,7 +41,7 @@ exports.generateTicket = onRequest(
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        // 🎫 Buat tiket
+        // Buat tiket
         const ticketRef = db.collection("tickets").doc();
         tx.set(ticketRef, {
           number: lastNumber,

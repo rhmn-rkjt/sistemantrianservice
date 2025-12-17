@@ -100,13 +100,11 @@ export default function AdminDashboard() {
   const callingTicket = tickets.find((t) => t.status === "called");
   const callingNumber = callingTicket ? callingTicket.number : "-";
 
-  // ================= UI =================
   return (
     <div className="admin-dashboard">
       {/* SIDEBAR */}
       <aside className="sidebar">
         <h3>Admin Panel</h3>
-        <button className="menu active">Dashboard</button>
         <button className="logout" onClick={handleLogout}>Logout</button>
       </aside>
 
@@ -128,7 +126,7 @@ export default function AdminDashboard() {
               onClick={handleCallNext}
               disabled={loading}
             >
-              Call Next → Done
+              Panggil
             </button>
 
             <button
@@ -136,7 +134,7 @@ export default function AdminDashboard() {
               onClick={handleSkip}
               disabled={loading}
             >
-              Skip → Missed
+              Lewati
             </button>
 
             <button
