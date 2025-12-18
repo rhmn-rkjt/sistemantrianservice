@@ -1,11 +1,231 @@
+/* index.css - SATU FILE CSS UNTUK SELURUH APLIKASI */
+
 /* GLOBAL */
-@import "./styles/dashboard.css";
-
-/* PER HALAMAN */
-@import "./customer/customer.css";
-@import "./admin/admin.css";
-
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
+  background: #f5faff;
+}
+
+/* COMPONENT BERSAMA (dipakai di Customer & Admin) */
+.queue-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.queue-number {
+  font-size: 96px;
+  font-weight: bold;
+  color: #003b6f;
+  margin: 24px 0;
+  line-height: 1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat-card {
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.stat-title {
+  margin-top: 8px;
+  font-size: 18px;
+  color: #555;
+}
+
+.waiting { background: #dff0ff; color: #1565c0; }
+.calling { background: #cdefff; color: #1565c0; }
+.missed  { background: #ffd6d6; color: #c62828; }
+.done    { background: #d6ffe0; color: #2e7d32; }
+
+/* BUTTON STYLES */
+.btn {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 8px;
+}
+
+.btn.primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn.primary:hover {
+  background: #0056b3;
+}
+
+.btn.danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn.danger:hover {
+  background: #c82333;
+}
+
+.btn.danger.outline {
+  background: transparent;
+  color: #dc3545;
+  border: 2px solid #dc3545;
+}
+
+.btn.danger.outline:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* TEXT HELPERS */
+.error {
+  color: #c62828;
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+.my-status {
+  margin-top: 24px;
+  font-size: 20px;
+}
+
+/* CUSTOMER PAGE */
+.customer-layout {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 40px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  align-content: start;
+}
+
+/* ADMIN DASHBOARD */
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #9adfff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar h3 {
+  margin: 0 0 40px 0;
+  color: #003b6f;
+  font-size: 24px;
+}
+
+.logout {
+  margin-top: auto;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 8px;
+  color: #003b6f;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard {
+  flex: 1;
+  padding: 40px;
+  background: #eef8ff;
+}
+
+.dashboard h2 {
+  margin: 0 0 8px 0;
+  color: #003b6f;
+}
+
+.date {
+  color: #666;
+  margin-bottom: 32px;
+  font-size: 18px;
+}
+
+.content {
+  display: flex;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ADMIN LOGIN */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eaf6ff;
+}
+
+.login-page h2 {
+  text-align: center;
+  margin-bottom: 32px;
+  color: #003b6f;
+}
+
+.login-page form {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-page input {
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-page button {
+  padding: 14px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-page button:hover {
+  background: #0056b3;
 }
