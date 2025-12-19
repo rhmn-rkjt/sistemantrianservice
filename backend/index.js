@@ -1,3 +1,11 @@
+const admin = require("firebase-admin");
+admin.initializeApp();
+
+exports.generateTicket = require("./generateTicket").generateTicket;
+exports.callNext = require("./callNext").callNext;
+exports.skipTicket = require("./skipTicket").skipTicket;
+exports.resetQueue = require("./resetQueue").resetQueue;
+
 /**
  * Import function triggers from their respective submodules:
  *
@@ -6,13 +14,6 @@
  *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
-const admin = require("firebase-admin");
-admin.initializeApp();
-
-exports.generateTicket = require("./generateTicket").generateTicket;
-exports.callNext = require("./callNext").callNext;
-exports.skipTicket = require("./skipTicket").skipTicket;
-exports.resetQueue = require("./resetQueue").resetQueue;
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
 // traffic spikes by instead downgrading performance. This limit is a

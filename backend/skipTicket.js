@@ -10,7 +10,6 @@ exports.skipTicket = onRequest(
       const counterRef = db.collection("counters").doc("daily");
 
       await db.runTransaction(async (tx) => {
-        // ================= READ PHASE =================
         const counterSnap = await tx.get(counterRef);
         if (!counterSnap.exists) {
           throw new Error("Counter not found");
@@ -42,7 +41,7 @@ exports.skipTicket = onRequest(
           throw new Error("Tidak ada nomor yang sedang dipanggil");
         }
 
-        // ================= WRITE PHASE =================
+        
         tx.update(callingSnap.docs[0].ref, {
           status: "missed",
         });
