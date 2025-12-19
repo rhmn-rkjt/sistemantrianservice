@@ -120,7 +120,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
-  align-content: start;
+  align-content: center;
 }
 
 /* ADMIN DASHBOARD */
@@ -148,16 +148,14 @@ body {
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.3);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   color: #003b6f;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.logout:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
+.logout:hover {background: rgba(255, 255, 255, 0.5);}
 
 .dashboard {
   flex: 1;
@@ -226,6 +224,62 @@ body {
   cursor: pointer;
 }
 
-.login-page button:hover {
-  background: #0056b3;
+.login-page button:hover {background: #0056b3;}
+
+/* TOAST NOTIFICATIONS (ADMIN & CUSTOMER) */
+
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 400px;
+}
+
+.toast {
+  padding: 16px 24px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(100%);
+  animation: toastIn 0.5s ease forwards;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: auto;
+  min-width: 300px;
+  backdrop-filter: blur(10px);
+}
+.toast.success {background: linear-gradient(135deg, #43a047, #66bb6a);}
+.toast.error {background: linear-gradient(135deg, #e53935, #ef5350);}
+.toast.info {background: linear-gradient(135deg, #1e88e5, #42a5f5);}
+.toast::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  flex-shrink: 0;
+}
+.toast.success::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+}
+.toast.error::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+}
+.toast.info::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E");
+}
+@keyframes toastIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

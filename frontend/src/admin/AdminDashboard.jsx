@@ -6,13 +6,11 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "../firebase";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-// ================= API URLS (Cloud Functions v2) =================
+//API URLS 
 const CALL_NEXT_URL = "https://callnext-hmyqiefrhq-et.a.run.app";
 const SKIP_URL = "https://skipticket-hmyqiefrhq-et.a.run.app";
 const RESET_URL = "https://asia-southeast2-sistemantrian.cloudfunctions.net/resetQueue";
@@ -20,9 +18,19 @@ const RESET_URL = "https://asia-southeast2-sistemantrian.cloudfunctions.net/rese
 export default function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [toasts, setToasts] = useState([]);
 
-  // ================= REALTIME TICKETS (SINGLE SOURCE OF TRUTH) =================
+  // Fungsi tambah toast
+  const addToast = (message, type = "info") => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4000);
+  };
+
+  //REALTIME TICKETS 
   useEffect(() => {
     const q = query(
       collection(db, "tickets"),
@@ -40,46 +48,47 @@ export default function AdminDashboard() {
     return () => unsub();
   }, []);
 
-  // ================= ACTION HELPER =================
-  const postAction = async (url) => {
+  //ACTION HELPER (untuk Call Next & Skip)
+  const postAction = async (url, successMsg = "Berhasil!") => {
     try {
       setLoading(true);
-      setError(null);
-
       const res = await fetch(url, { method: "POST" });
+
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text);
+        throw new Error(text || "Gagal melakukan aksi");
       }
+
+      addToast(successMsg, "success");
     } catch (err) {
       console.error(err);
-      setError(err.message || "Aksi gagal dijalankan");
+      addToast(err.message || "Aksi gagal dijalankan", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  // ================= ACTIONS =================
-  const handleCallNext = () => postAction(CALL_NEXT_URL);
-  const handleSkip = () => postAction(SKIP_URL);
+  //ACTIONS
+  const handleCallNext = () => postAction(CALL_NEXT_URL, "Nomor berikutnya dipanggil!");
+  const handleSkip = () => postAction(SKIP_URL, "Nomor saat ini dilewati.");
 
+  // Reset
   const handleReset = async () => {
-    if (!confirm("Reset antrian harian?")) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const res = await fetch(RESET_URL, { method: "POST" });
-      const data = await res.json();
-
-      if (!data.success) throw new Error(data.error || "Gagal reset antrian");
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (!confirm("Yakin reset antrian harian? Semua data hari ini akan hilang.")) {
+      return;
     }
+
+    setLoading(true);
+
+    await fetch(RESET_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    addToast("Antrian direset!", "success");
+    setLoading(false);
   };
 
   const navigate = useNavigate();
@@ -87,12 +96,15 @@ export default function AdminDashboard() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      addToast("Logout berhasil", "info");
+      navigate("/login");
     } catch (err) {
       console.error(err);
+      addToast("Gagal logout", "error");
     }
   };
 
-  // ================= STATISTIK (SINKRON CUSTOMER) =================
+  //STATISTIK
   const waiting = tickets.filter((t) => t.status === "waiting").length;
   const done = tickets.filter((t) => t.status === "done").length;
   const missed = tickets.filter((t) => t.status === "missed").length;
@@ -101,67 +113,85 @@ export default function AdminDashboard() {
   const callingNumber = callingTicket ? callingTicket.number : "-";
 
   return (
-    <div className="admin-dashboard">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <h3>Admin Panel</h3>
-        <button className="logout" onClick={handleLogout}>Logout</button>
-      </aside>
-
-      {/* MAIN */}
-      <main className="dashboard">
-        <h2>Admin Dashboard</h2>
-        <p className="date">{new Date().toLocaleDateString()}</p>
-
-        <div className="content">
-          {/* KIRI — NOMOR DIPANGGIL */}
-          <div className="queue-card">
-            <div className="queue-number">{callingNumber}</div>
-
-            <hr />
-            <h3>Sedang Dipanggil</h3>
-
-            <button
-              className="btn primary"
-              onClick={handleCallNext}
-              disabled={loading}
-            >
-              Panggil
-            </button>
-
-            <button
-              className="btn danger"
-              onClick={handleSkip}
-              disabled={loading}
-            >
-              Lewati
-            </button>
-
-            <button
-              className="btn danger outline"
-              onClick={handleReset}
-              disabled={loading}
-            >
-              Reset Antrian
-            </button>
-
-            {error && <p className="error">{error}</p>}
+    <>
+      {/* Toast Notifications */}
+      <div className="notification-container">
+        {toasts.map((toast) => (
+          <div key={toast.id} className={`toast ${toast.type}`}>
+            {toast.message}
           </div>
+        ))}
+      </div>
 
-          {/* KANAN — STATISTIK */}
-          <div className="stats-grid">
-            <StatBox title="Waiting" value={waiting} />
-            <StatBox title="Calling" value={callingNumber} />
-            <StatBox title="Missed" value={missed} />
-            <StatBox title="Done" value={done} />
+      <div className="admin-dashboard">
+        {/* SIDEBAR */}
+        <aside className="sidebar">
+          <h3>Admin Panel</h3>
+          <button className="logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </aside>
+
+        {/* MAIN */}
+        <main className="dashboard">
+          <h2>Admin Dashboard</h2>
+          <p className="date">
+            {new Date().toLocaleDateString("id-ID", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+
+          <div className="content">
+            {/* KIRI — NOMOR DIPANGGIL */}
+            <div className="queue-card">
+              <div className="queue-number">{callingNumber}</div>
+
+              <hr />
+              <h3>Sedang Dipanggil</h3>
+
+              <button
+                className="btn primary"
+                onClick={handleCallNext}
+                disabled={loading}
+              >
+                {loading ? "Memproses..." : "Panggil Berikutnya"}
+              </button>
+
+              <button
+                className="btn danger"
+                onClick={handleSkip}
+                disabled={loading}
+              >
+                Lewati
+              </button>
+
+              <button
+                className="btn danger outline"
+                onClick={handleReset}
+                disabled={loading}
+              >
+                {loading ? "Sedang mereset..." : "Reset Antrian Harian"}
+              </button>
+            </div>
+
+            {/* KANAN — STATISTIK */}
+            <div className="stats-grid">
+              <StatBox title="Waiting" value={waiting} />
+              <StatBox title="Calling" value={callingNumber} />
+              <StatBox title="Missed" value={missed} />
+              <StatBox title="Done" value={done} />
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
 
-// ================= COMPONENT STAT =================
+//COMPONENT STAT
 function StatBox({ title, value }) {
   return (
     <div className={`stat-card ${title.toLowerCase()}`}>
@@ -170,5 +200,3 @@ function StatBox({ title, value }) {
     </div>
   );
 }
-
-
