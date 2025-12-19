@@ -19,7 +19,6 @@ exports.callNext = onRequest(
       const ticketsCol = db.collection("tickets");
 
       const result = await db.runTransaction(async (tx) => {
-        // ================= READ PHASE =================
         const counterSnap = await tx.get(counterRef);
 
         let currentNumber = 0;
@@ -27,12 +26,10 @@ exports.callNext = onRequest(
           currentNumber = counterSnap.data().currentNumber || 0;
         }
 
-        // tiket sedang dipanggil
         const callingSnap = await tx.get(
           ticketsCol.where("status", "==", "called").limit(1)
         );
 
-        // tiket waiting TERKECIL
         const waitingSnap = await tx.get(
           ticketsCol
             .where("status", "==", "waiting")
@@ -40,21 +37,18 @@ exports.callNext = onRequest(
             .limit(1)
         );
 
-        // ❌ TIDAK ADA ANTRIAN
         if (waitingSnap.empty && callingSnap.empty) {
           throw new Error("Tidak ada antrian menunggu");
         }
 
-        // ================= WRITE PHASE =================
 
-        // DONE tiket yang sedang dipanggil
+
         if (!callingSnap.empty) {
           tx.update(callingSnap.docs[0].ref, {
             status: "done",
           });
         }
 
-        // CALL tiket waiting berikutnya
         if (!waitingSnap.empty) {
           const nextTicket = waitingSnap.docs[0];
           tx.update(nextTicket.ref, {
@@ -73,7 +67,6 @@ exports.callNext = onRequest(
           return { currentNumber: nextTicket.data().number };
         }
 
-        // Kalau tidak ada waiting tapi masih ada calling
         tx.set(
           counterRef,
           {
